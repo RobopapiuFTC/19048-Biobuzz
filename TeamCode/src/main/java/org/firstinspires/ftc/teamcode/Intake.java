@@ -32,7 +32,7 @@ public class Intake {
         ramp= hwMap.get(Servo.class, "ramp");
         latch=hwMap.get(Servo.class, "latch");
         latch.setPosition(closedpos);
-        ramp.setPosition(0.29);
+        ramp.setPosition(0.3);
         timer=new Timer();
 
     }
@@ -56,11 +56,11 @@ public class Intake {
 
         }
         if (direction == 1) {
-            ramp.setPosition(0.29);
+            ramp.setPosition(0.3);
         } else {
             ramp.setPosition(0.61);
         }
-        if (timer.seconds() > 1) {
+        if (timer.seconds() > 0.4) {
             FrontSetPowerDir(power,direction);
             RearSetPowerDir(power, direction);
         }

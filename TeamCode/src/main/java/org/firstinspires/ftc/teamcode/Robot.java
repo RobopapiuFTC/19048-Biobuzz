@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode;
 
 import com.pedropathing.follower.Follower;
 import com.pedropathing.math.Pose;
+import com.pedropathing.utils.Timer;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import org.firstinspires.ftc.teamcode.Intake;
@@ -18,13 +19,17 @@ public class Robot {
     public Follower f;
     public Intake i;
     Turret t;
+    Shooter s;
+    public double distance;
     boolean slowmode = false, intake = false, polenFront = false, latchON=false, forward=true;
     double direction;
 
 
     Pose Hive1B= new Pose(83.42,48.7,Math.toRadians(90));
-    Pose Hive2B=new Pose(83.42, 89.7, Math.toRadians(270));
+    Pose Hive2B=new Pose(83.42, 94.3, Math.toRadians(270));
+    Timer sTimer;
     private Pose Robotpose;
+    public double dist, target;
 
 
     public Robot(HardwareMap h, Follower f, Gamepad g1, boolean blue) {
@@ -33,6 +38,7 @@ public class Robot {
         this.f = f;
         i = new Intake(this.h);
         t = new Turret(this.h, true);
+        s=new Shooter(this.h);
         direction=1;
         this.Robotpose= f.pose();
     }
@@ -74,6 +80,11 @@ public class Robot {
 
 
     }
+    public void sequenceShoot() {
+        if (latchON) {
+            shoot(Robotpose);
+        }
+    }
     public void Latch(){
         i.latch(direction, latchON);
 
@@ -90,6 +101,7 @@ public class Robot {
     public void loop(){
         controls();
         sequenceIntake();
+        shoot(Robotpose);
         Latch();
 
     }
@@ -106,11 +118,33 @@ public class Robot {
         t.periodic();
 
     }
+    public void setActivated(boolean activated){
+
+    }
+
+    public void shoot(Pose RobotPose) {
+        Robotpose=f.pose();
+        s.activated=true;
+        if(Robotpose.y()<70.75){
+            dist=Math.hypot(Hive1B.x() - Robotpose.x(), Hive1B.y() - Robotpose.y());
+        }else{
+            dist=Math.hypot(Hive2B.x() - Robotpose.x(), Hive2B.y() - Robotpose.y());
+        }
+        distance=dist;
+        s.forDistance(dist);
+        s.periodic();
+    }
+    public void setTarget(double velocity) {
+        target = velocity;
+    }
+    public double GetTarget(){
+        return target;
+    }
     public void rPeriodic(){
         loop();
         drive();
         turret();
-        //Shooter();
+
 
     }
     public void Shooter(){

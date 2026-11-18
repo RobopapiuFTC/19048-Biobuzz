@@ -18,7 +18,7 @@ public class TeleOP extends OpMode {
 
     Robot r;
     private Follower f;
-    public static Pose startPose = new Pose(93.7, 9.9, Math.toRadians(90));
+    public static Pose startPose = new Pose(83.4, 8, Math.toRadians(90));
     DcMotorEx shooter, shooter2;
     Pose robotPose;
 
@@ -44,13 +44,16 @@ public class TeleOP extends OpMode {
         robotPose= f.pose();
         r.rPeriodic();
        // r.i.shooter.setPower(1);
-        shooter.setPower(0.8);
-        shooter2.setPower(0.8);
+      //  shooter.setPower(0.8);
+       // shooter2.setPower(0.8);
         telemetry.addData("x ",robotPose.x());
         telemetry.addData("y ",robotPose.y());
         telemetry.addData("heading ",robotPose.heading());
         telemetry.addData("Forward",r.getFront());
+        telemetry.addData("Power  ", r.s.Power);
+        telemetry.addData("distance ", r.distance);
         telemetry.update();
+        telemetry.addData("Motor current ", r.i.getFA());
     }
 
 
