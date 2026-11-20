@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.Systems;
 
 import com.pedropathing.utils.Timer;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
@@ -24,25 +25,26 @@ public class Intake {
 
     double direction,ramppos;
     boolean rampMove=false, on=false,latchopen, move;
-    double rampposition, latchclosedpos,lastdirection,closedpos=0.9, openpos=0.47;
+    double rampposition, latchclosedpos,lastdirection,closedpos=0.87    , openpos=0.47;
 
     public Intake(HardwareMap hwMap){
         intake= hwMap.get(DcMotorEx.class, "intake");
         rearIntake= hwMap.get(DcMotorEx.class, "rintake");
         ramp= hwMap.get(Servo.class, "ramp");
         latch=hwMap.get(Servo.class, "latch");
+        //rearIntake.setDirection(DcMotorSimple.Direction.REVERSE);
         latch.setPosition(closedpos);
         ramp.setPosition(0.3);
         timer=new Timer();
 
     }
 
-    public void FrontSetPowerDir(double power,double direction) {
-        intake.setPower(power*direction);
+    public void FrontSetPowerDir(double power) {
+        intake.setPower(power);
     }
 
-    public void RearSetPowerDir(double power,double direction) {
-        rearIntake.setPower(power * direction * -1);
+    public void RearSetPowerDir(double power) {
+        rearIntake.setPower(-power);
     }
 
     public double getFA(){
@@ -63,14 +65,9 @@ public class Intake {
             ramp.setPosition(0.61);
             latch(direction, false);
         }
-        if (timer.seconds() > 0.4) {
-            FrontSetPowerDir(power,direction);
-            RearSetPowerDir(power, direction);
-        }
-        else{
-            FrontSetPowerDir(0,0);
-            RearSetPowerDir(0, 0);
-        }
+
+            FrontSetPowerDir(1);
+            RearSetPowerDir(1);
     }
    /*public void Int( double power, double direction, boolean dir)
        {

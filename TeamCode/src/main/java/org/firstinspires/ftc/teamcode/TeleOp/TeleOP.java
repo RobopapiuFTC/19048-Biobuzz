@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.TeleOp;
+import com.pedropathing.drivetrain.DrivePowers;
 import com.pedropathing.follower.Follower;
+import com.pedropathing.follower.ManualDrive;
 import com.pedropathing.math.Pose;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -31,13 +33,21 @@ public class TeleOP extends OpMode {
         f.setPose(startPose);
         f.update();
         r=new Robot(hardwareMap, f, gamepad1, true);
-        shooter=hardwareMap.get(DcMotorEx.class, "SS");
-        shooter2=hardwareMap.get(DcMotorEx.class, "SD");
-        shooter2.setDirection(DcMotorSimple.Direction.REVERSE);
+        //shooter=hardwareMap.get(DcMotorEx.class, "SS");
+        //shooter2=hardwareMap.get(DcMotorEx.class, "SD");
+        //shooter2.setDirection(DcMotorSimple.Direction.REVERSE);
 
     }
     @Override
     public void loop() {
+        DrivePowers powers= ManualDrive.fieldCentric(
+                gamepad1.left_stick_y,
+                gamepad1.left_stick_x,
+                -gamepad1.right_stick_x,
+                f.pose().heading()
+        );
+        f.manual(powers);
+
         f.update();
 
 

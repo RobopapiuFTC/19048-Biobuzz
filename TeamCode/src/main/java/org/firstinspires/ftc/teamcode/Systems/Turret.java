@@ -100,8 +100,8 @@ public class Turret {
     public void periodic() {
         if(on){
             target=clamp(t/Math.toRadians(369)+0.01,0.01,0.98);
-            t1.setPosition(target);
-            t2.setPosition(target);
+            t1.setPosition(target*0.9607);
+            t2.setPosition(target*0.9607);
         }
         else{
             t1.setPosition(0.05);
@@ -139,7 +139,7 @@ public class Turret {
 
 
     public void face(Pose targetPose, Pose robotPose) {
-        double angleToTargetFromCenter = (Math.atan2(targetPose.y() - robotPose.y(), targetPose.x() - robotPose.x()))*0.96079938508;
+        double angleToTargetFromCenter = (Math.atan2(targetPose.y() - robotPose.y(), targetPose.x() - robotPose.x()));
 
         double robotAngleDiff = AngleUnit.normalizeRadians(angleToTargetFromCenter - robotPose.heading() + tti);
         setYaw(robotAngleDiff + offset);

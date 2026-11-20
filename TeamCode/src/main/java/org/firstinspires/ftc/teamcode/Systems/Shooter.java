@@ -4,6 +4,7 @@ import static com.pedropathing.utils.Utils.clamp;
 
 import com.pedropathing.math.Pose;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
@@ -33,6 +34,7 @@ public class Shooter {
     public Shooter(HardwareMap h) {
         Shooter1 = h.get(DcMotorEx.class, "SS");
         Shooter2 = h.get(DcMotorEx.class, "SD");
+        Shooter2.setDirection(DcMotorSimple.Direction.REVERSE);
         hood = h.get(Servo.class, "SVD");
         hood.setDirection(Servo.Direction.REVERSE);
         hood.setPosition(0.8);

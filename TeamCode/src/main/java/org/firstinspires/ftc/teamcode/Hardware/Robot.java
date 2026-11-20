@@ -28,6 +28,7 @@ public class Robot {
 
     Pose Hive1B= new Pose(83.42,48.7,Math.toRadians(90));
     Pose Hive2B=new Pose(83.42, 94.3, Math.toRadians(270));
+    Pose Flower= new Pose(82.4, 8, Math.toRadians(90));
     Timer sTimer;
     private Pose Robotpose;
     public double dist, target;
@@ -65,6 +66,9 @@ public class Robot {
             latchON=false;
             shooting=false;
         }
+        if(g1.leftBumperWasPressed()){
+            relocalizationF();
+        }
         if(g1.dpadUpWasPressed()){
             s.flywheelOffset=s.flywheelOffset+10;
         }
@@ -83,12 +87,18 @@ public class Robot {
         if(g1.xWasPressed()){
             latchON=true;
             intake=false;
+            shooting=false;
         }
 
     }
     public void sequenceIntake(){
         if(intake){
-            i.Int(1,getFront());
+            if(getFront()==1){
+                i.Int(1, getFront());
+            }
+            else if(getFront()==-1){
+                i.Int(-1, getFront());
+            }
         }else{
             i.IntStop();
         }
@@ -101,11 +111,15 @@ public class Robot {
         }
     }
     public void Latch(){
-
+        if(!shooting){
+            i.IntStop();
+        }
         i.latch(direction, latchON);
 
+    }
 
-
+    public void relocalizationF(){
+        f.setPose(Flower);
     }
     public double getFront(){
         if(forward){
@@ -165,7 +179,7 @@ public class Robot {
     }
     public void rPeriodic(){
         loop();
-        drive();
+        //drive();
         turret();
 
 
