@@ -19,13 +19,13 @@ public class Intake {
 
     DcMotorEx intake, rearIntake;
     //public DcMotorEx shooter;
-    Servo ramp, latch;
+    Servo ramp, latch, flowerIntake;
     double intakeA, rearIntakeA;
     Timer timer, shootingTimer;
 
-    double direction,ramppos;
-    boolean rampMove=false, on=false,latchopen, move;
-    double rampposition, latchclosedpos,lastdirection,closedpos=0.87    , openpos=0.47;
+    public double direction;
+    public boolean Flower=false,dir=true,LatchOpen;
+    double closedpos=0.7    , openpos=0.47, flowerClosed=0.2;
 
     public Intake(HardwareMap hwMap){
         intake= hwMap.get(DcMotorEx.class, "intake");
@@ -33,25 +33,27 @@ public class Intake {
         ramp= hwMap.get(Servo.class, "ramp");
         latch=hwMap.get(Servo.class, "latch");
         //rearIntake.setDirection(DcMotorSimple.Direction.REVERSE);
-        latch.setPosition(closedpos);
+        latch.setPosition(0.5);
         ramp.setPosition(0.3);
+        flowerIntake=hwMap.get(Servo.class, "flower");
+        flowerIntake.setPosition(flowerClosed);
         timer=new Timer();
 
     }
 
-    public void FrontSetPowerDir(double power) {
-        intake.setPower(power);
+    public void FrontSetPowerDir() {
+        intake.setPower(1*direction);
     }
 
-    public void RearSetPowerDir(double power) {
-        rearIntake.setPower(-power);
+    public void RearSetPowerDir() {
+        rearIntake.setPower(-1*direction);
     }
 
     public double getFA(){
         return intake.getCurrent(CurrentUnit.AMPS);
     }
     public double getRA() {return rearIntake.getCurrent(CurrentUnit.AMPS);}
-    public void Int(double power, double direction) {
+    /*public void Int(double power, double direction, boolean latch) {
         if (direction != lastdirection) {
             timer.reset();
             lastdirection = direction;
@@ -68,35 +70,47 @@ public class Intake {
 
             FrontSetPowerDir(1);
             RearSetPowerDir(1);
-    }
-   /*public void Int( double power, double direction, boolean dir)
+    }*/
+   public void Int()
        {
            if (dir) {
-               FrontSetPowerDir(power,direction);
-               RearSetPowerDir(power, direction);
-               if (direction > 0) {
-                   ramp.setPosition(0.29);
-               }else {
-                   ramp.setPosition(0.61);
+               FrontSetPowerDir();
+               RearSetPowerDir();
+               if(getFA()>2.5||getRA()>2.5){
+                   dir=false;
                }
            }else {
-               rampposition=ramp.getPosition();
-               if(rampposition==0.29){
-                   intake.setPower(1);
-                   rearIntake.setPower(-1);
-               }
-               else{
-                   intake.setPower(-1);
-                   rearIntake.setPower(1);
-               }
+                if(getFA()>2.5){
+                direction=1;
+                FrontSetPowerDir();
+                RearSetPowerDir();
+                ramp.setPosition(0.3);
+                }else if(getRA()>2.5){
+                    direction=-1;
+                    FrontSetPowerDir();
+                    RearSetPowerDir();
+                    ramp.setPosition(0.61);
+                }
+                if(getFA()<2.5&&getRA()<2.5){
+                    dir=true;
+                }
+
            }
-       }*/
+       }
 
     public void IntStop(){
         intake.setPower(0);
         rearIntake.setPower(0);
     }
+    public void flower(){
+       if(Flower){
+           flowerIntake.setPosition(0.64);
 
+       }
+       else{
+           flowerIntake.setPosition(flowerClosed);
+       }
+    }
 
     public void Shooting(){
         intake.setPower(1);
@@ -104,17 +118,16 @@ public class Intake {
     }
 
 
-    public void latch(double direction, boolean on) {
-
+    public void latch() {
 
         if (direction == 1) {
-            if (on) {
+            if (LatchOpen) {
                 latch.setPosition(openpos);
             } else {
                 latch.setPosition(closedpos);
             }
         } else {
-            if (on) {
+            if (LatchOpen) {
                 latch.setPosition(closedpos);
             } else {
                 latch.setPosition(openpos);

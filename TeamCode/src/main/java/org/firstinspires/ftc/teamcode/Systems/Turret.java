@@ -100,8 +100,8 @@ public class Turret {
     public void periodic() {
         if(on){
             target=clamp(t/Math.toRadians(369)+0.01,0.01,0.98);
-            t1.setPosition(target*0.9607);
-            t2.setPosition(target*0.9607);
+            t1.setPosition(target);
+            t2.setPosition(target);
         }
         else{
             t1.setPosition(0.05);

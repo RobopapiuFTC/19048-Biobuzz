@@ -40,18 +40,10 @@ public class TeleOP extends OpMode {
     }
     @Override
     public void loop() {
-        DrivePowers powers= ManualDrive.fieldCentric(
-                gamepad1.left_stick_y,
-                gamepad1.left_stick_x,
-                -gamepad1.right_stick_x,
-                f.pose().heading()
-        );
-        f.manual(powers);
-
         f.update();
 
-
         robotPose= f.pose();
+
         r.rPeriodic();
        // r.i.shooter.setPower(1);
       //  shooter.setPower(0.8);
