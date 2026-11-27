@@ -74,7 +74,7 @@ Follower f;
         Pose RobotPose=f.pose();
         f.update();
         t.face(Hive1B, RobotPose);
-        t.periodic();
+        t.loop();
 
         if(gamepad1.leftBumperWasPressed()){
             intakeIsOn=!intakeIsOn;

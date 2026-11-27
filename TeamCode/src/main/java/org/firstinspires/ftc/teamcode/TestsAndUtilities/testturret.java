@@ -26,7 +26,7 @@ public class testturret extends OpMode {
 @Override
     public void loop(){
     f.update();
-    t.periodic();
+    t.loop();
     if(gamepad1.aWasPressed()){
 
         t.face(targetPose, f.pose());

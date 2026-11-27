@@ -18,42 +18,34 @@ public class TeleOP extends OpMode {
 
     Robot r;
     private Follower f;
-    public static Pose startPose = new Pose(133.5, 24.1, Math.toRadians(270));
-    DcMotorEx shooter, shooter2;
-    Pose robotPose;
+    public static Pose startPose = new Pose(130, 8, Math.toRadians(0));
+    public Pose robotPose;
 
 
 
 
     @Override
     public void init() {
-        f= Constants.create(hardwareMap);
+        f = Constants.create(hardwareMap);
         f.setPose(startPose);
         f.update();
-        r=new Robot(hardwareMap, f, gamepad1, true);
-        shooter=hardwareMap.get(DcMotorEx.class, "SS");
-        shooter2=hardwareMap.get(DcMotorEx.class, "SD");
-        shooter2.setDirection(DcMotorSimple.Direction.REVERSE);
-
+        r=new Robot(hardwareMap, f, gamepad1, true,startPose);
+        r.tInit();
     }
     @Override
     public void loop() {
         f.update();
 
-
-        robotPose= f.pose();
         r.rPeriodic();
-       // r.i.shooter.setPower(1);
-      //  shooter.setPower(0.8);
-       // shooter2.setPower(0.8);
-        telemetry.addData("x ",robotPose.x());
-        telemetry.addData("y ",robotPose.y());
-        telemetry.addData("heading ",robotPose.heading());
-        telemetry.addData("Forward",r.getFront());
-        telemetry.addData("Power  ", r.ShooterPower());
-        telemetry.addData("distance ", r.distance);
+
+        telemetry.addData("x ",r.currentPose.x());
+        telemetry.addData("y ",r.currentPose.y());
+        telemetry.addData("heading ",r.currentPose.heading());
+        telemetry.addData("Forward",r.i.direction);
+        telemetry.addData("Distance ", r.distance);
         telemetry.addData("Flywheel Velocity ", r.getShooterVelocity());
-        telemetry.addData("Motor current ", r.i.getFA());
+        telemetry.addData("Front Amps ", r.i.getFA());
+        telemetry.addData("Rear Amps ", r.i.getRA());
         telemetry.update();
     }
 
