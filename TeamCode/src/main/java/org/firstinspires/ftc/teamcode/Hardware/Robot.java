@@ -119,7 +119,7 @@ public class Robot {
             movingPose = new Pose(clamp(goalPose.x()+scalarX*currentPose.distance(goalPose)*0.1, 78,90), clamp(goalPose.y()+scalarY,goalPose.y(),88),0);
         }
         else if(goalPose == HivePark){
-            scalingY = clamp(goalPose.y()-(134-80)/abs(goalPose.y()-currentPose.y()), 56, goalPose.y());
+            scalingY = clamp(goalPose.y()-(134-80)/abs(goalPose.y()-currentPose.y())+1, 56, goalPose.y());
             distanceY = clamp(goalPose.y()-currentPose.distance(goalPose)*0.1333333, 56, goalPose.y());
             scalarY = abs(scalingY-distanceY)*abs(currentPose.x()-goalPose.x())*0.102;
             movingPose = new Pose(clamp(goalPose.x()+scalarX*currentPose.distance(goalPose)*0.1,78,90), clamp(goalPose.y()-scalarY,56,goalPose.y()),0);
