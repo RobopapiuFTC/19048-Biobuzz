@@ -3,6 +3,8 @@ package org.firstinspires.ftc.teamcode.Hardware;
 
 import static com.pedropathing.utils.Utils.clamp;
 
+import static java.lang.Math.abs;
+
 import com.pedropathing.follower.Follower;
 import com.pedropathing.math.Pose;
 import com.pedropathing.math.Vector2D;
@@ -36,7 +38,7 @@ public class Robot {
     public static boolean sotm = false;
     public static double tof = 0.25;
     public static Pose currentPose,goalPose,startingPose,endPose,predictedPose,movingPose;
-    public double dist, target, scalarX, scalarY;
+    public double dist, target, scalarX, distanceY,scalingY,scalarY;
 
 
     public Robot(HardwareMap h, Follower f, Gamepad g1, boolean blue, Pose startingPose) {
@@ -111,10 +113,16 @@ public class Robot {
         if(currentPose.x() > HiveLine.x())scalarX = -1;
         else scalarX = 1;
         if(goalPose == HiveLine){
-            movingPose = new Pose(clamp(goalPose.x()+scalarX*currentPose.distance(goalPose)*0.1, 78,90), clamp(goalPose.y()+currentPose.distance(goalPose)*0.1333333,goalPose.y(),88),0);
+            scalingY = clamp(goalPose.y()+(134-80)/abs(goalPose.y()-currentPose.y())-1, goalPose.y(), 88);
+            distanceY = clamp(goalPose.y()+currentPose.distance(goalPose)*0.1333333, goalPose.y(), 88);
+            scalarY = abs(scalingY-distanceY)*abs(currentPose.x()-goalPose.x())*0.102;
+            movingPose = new Pose(clamp(goalPose.x()+scalarX*currentPose.distance(goalPose)*0.1, 78,90), clamp(goalPose.y()+scalarY,goalPose.y(),88),0);
         }
         else if(goalPose == HivePark){
-            movingPose = new Pose(clamp(goalPose.x()+scalarX*currentPose.distance(goalPose)*0.1,78,90), clamp(goalPose.y()-currentPose.distance(goalPose)*0.1333333,56,goalPose.y()),0);
+            scalingY = clamp(goalPose.y()-(134-80)/abs(goalPose.y()-currentPose.y()), 56, goalPose.y());
+            distanceY = clamp(goalPose.y()-currentPose.distance(goalPose)*0.1333333, 56, goalPose.y());
+            scalarY = abs(scalingY-distanceY)*abs(currentPose.x()-goalPose.x())*0.102;
+            movingPose = new Pose(clamp(goalPose.x()+scalarX*currentPose.distance(goalPose)*0.1,78,90), clamp(goalPose.y()-scalarY,56,goalPose.y()),0);
         }
     }
     public void direction(){
