@@ -22,7 +22,7 @@ public class ShooterTuningTeleop extends OpMode {
     private DcMotorEx shooter2,intake;
     private Servo hood, ramp;
     Turret t;
-Follower f;
+    Follower f;
     boolean intakeIsOn;
     private double motorPower = 0.7;
     private double hoodPosition = 0.4;
