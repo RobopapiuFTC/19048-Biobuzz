@@ -1,6 +1,8 @@
 package org.firstinspires.ftc.teamcode.Hardware;
 
 
+import static com.pedropathing.utils.Utils.clamp;
+
 import com.pedropathing.follower.Follower;
 import com.pedropathing.math.Pose;
 import com.pedropathing.math.Vector2D;
@@ -29,12 +31,12 @@ public class Robot {
     public double direction;
 
 
-    public Pose HivePark = new Pose(83.42,48.7,Math.toRadians(90));
-    public Pose HiveLine = new Pose(83.42, 94.3, Math.toRadians(270));
+    public Pose HivePark = new Pose(84,64,Math.toRadians(90));
+    public Pose HiveLine = new Pose(84, 80, Math.toRadians(270));
     public static boolean sotm = false;
     public static double tof = 0.25;
-    public static Pose currentPose,goalPose,startingPose,endPose,predictedPose;
-    public double dist, target;
+    public static Pose currentPose,goalPose,startingPose,endPose,predictedPose,movingPose;
+    public double dist, target, scalarX, scalarY;
 
 
     public Robot(HardwareMap h, Follower f, Gamepad g1, boolean blue, Pose startingPose) {
@@ -71,6 +73,9 @@ public class Robot {
         if(g1.dpadUpWasPressed()){
             s.flywheelOffset=s.flywheelOffset+10;
         }
+        if(g1.bWasPressed()){
+            sotm = !sotm;
+        }
         if(g1.dpadDownWasPressed()){
             s.flywheelOffset=s.flywheelOffset-10;
         }
@@ -85,9 +90,6 @@ public class Robot {
         }
         if(g1.aWasPressed()){
             i.Transfer();
-            i.intaking = false;
-            i.latchopen();
-            i.Shooting();
         }
 
     }
@@ -96,6 +98,7 @@ public class Robot {
         predictedPose(currentPose,f.velocity().toVector2D());
         direction();
         shootTarget();
+        movingGoal();
     }
     public void predictedPose(Pose current, Vector2D velocity) {
         predictedPose = new Pose(
@@ -103,6 +106,16 @@ public class Robot {
                 current.y() + velocity.y() * tof,
                 current.heading()
         );
+    }
+    public void movingGoal(){
+        if(currentPose.x() > HiveLine.x())scalarX = -1;
+        else scalarX = 1;
+        if(goalPose == HiveLine){
+            movingPose = new Pose(clamp(goalPose.x()+scalarX*currentPose.distance(goalPose)*0.1, 78,90), clamp(goalPose.y()+currentPose.distance(goalPose)*0.1333333,goalPose.y(),88),0);
+        }
+        else if(goalPose == HivePark){
+            movingPose = new Pose(clamp(goalPose.x()+scalarX*currentPose.distance(goalPose)*0.1,78,90), clamp(goalPose.y()-currentPose.distance(goalPose)*0.1333333,56,goalPose.y()),0);
+        }
     }
     public void direction(){
         if(-g1.left_stick_y > 0.1)i.direction = 1;
@@ -114,10 +127,10 @@ public class Robot {
     }
     public void shoot(Pose RobotPose) {
         s.activated=true;
-        dist = goalPose.distance(RobotPose);
+        dist = movingPose.distance(RobotPose);
         distance=dist;
         s.forDistance(dist);
-        t.face(goalPose,currentPose);
+        t.face(movingPose,currentPose);
         t.automatic();
     }
     public void loop(){
